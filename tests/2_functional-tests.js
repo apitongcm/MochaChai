@@ -28,7 +28,7 @@ suite('Functional Tests', function () {
         .keepOpen()
         .get('/hello?name=Carl')
         .end(function (err, res) {
-          assert.equal(res.status, 200, "request is successful");
+          assert.equal(res.status, 200, "request is not successful");
           assert.equal(res.text, 'hello Carl', "name is not Carl");
           done();
         });
@@ -39,15 +39,25 @@ suite('Functional Tests', function () {
         .request(server)
         .keepOpen()
         .put('/travellers')
-
+        .send({
+          "name":"Cristoforo",
+          "surname":"Colombo",
+          "dates": "1998"
+        })
         .end(function (err, res) {
-          assert.fail();
-
+          assert.equal(res.status, 200, "data not successfully added");
+          assert.equal(res.type, 'application/json', "different data type");
+          assert.equal(res.body.name, "Cristoforo", "body name is not Cristoforo");
+          assert.equal(res.body.surname, "Colombo", "surname is not Colombo");
           done();
         });
     });
     // #4
     test('Send {surname: "da Verrazzano"}', function (done) {
+      chai
+        .request(server)
+        .keepOpen()
+        .put('/travellers')
       assert.fail();
 
       done();
