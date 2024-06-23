@@ -58,24 +58,40 @@ suite('Functional Tests', function () {
         .request(server)
         .keepOpen()
         .put('/travellers')
-      assert.fail();
-
+        .send({
+            "name":"Giovanni",
+            "surname":"da Verrazzano",
+            "dates":"1950"
+        })
+        .end(function(err,res){
+          assert.equal(res.status, 200, "data not successfully added");
+          assert.equal(res.type, 'application/json', "different data type");
+          assert.equal(res.body.name,"Giovanni","name is not Giovanni");
+          assert.equal(res.body.surname,"da Verrazzano","surname is not da Verrazzano")    
+        });
+ 
       done();
     });
   });
 });
 
 const Browser = require('zombie');
+Browser.site="https://3000-freecodecam-boilerplate-5fd4bs7pol5.ws-us114.gitpod.io"
 
 suite('Functional Tests with Zombie.js', function () {
   this.timeout(5000);
 
+  const browser = new Browser();
 
 
   suite('Headless browser', function () {
     test('should have a working "site" property', function() {
       assert.isNotNull(browser.site);
     });
+
+    suiteSetup(function(done){
+      return browser.visit('/',done);
+    })
   });
 
   suite('"Famous Italian Explorers" form', function () {
